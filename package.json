@@ -1,15 +1,19 @@
 {
   "name": "tenziesgame",
   "private": true,
+  "homepage": "https://valeriakliui.github.io/tenzies-game/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
+    "gh-pages": "^5.0.0",
     "nanoid": "^4.0.2",
     "react": "^18.2.0",
     "react-confetti": "^6.1.0",
