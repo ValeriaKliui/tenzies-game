@@ -10,12 +10,12 @@ function App() {
   const [tenzies, setTenzies] = useState(false)
   const [moves, setMoves] = useState(0)
   const [isTimerStarted, setTimerStarted] = useState(false);
-  const [isGameRestarted, setGameRestarted] = useState(false)
 
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
 
   useEffect(() => {
+    console.log(isTimerStarted, tenzies)
     if (isTimerStarted) {
       const timerId = setInterval(() => {
         setSeconds(prevSec => prevSec + 1)
@@ -25,11 +25,13 @@ function App() {
         }
       }
         , 1000);
-      if (tenzies) clearInterval(timerId)
+      if (tenzies) {
+        clearInterval(timerId);
+      }
       return () => clearInterval(timerId)
     }
   }
-    , [seconds, isTimerStarted])
+    , [seconds, isTimerStarted, tenzies])
 
 
   const dicesElem = dice.map((num) => {
@@ -63,6 +65,10 @@ function App() {
         return elem.isHeld ? elem : generateNewDice();
       })
     })
+    setMoves(prevState => {
+      return tenzies ? prevState : prevState + 1
+    }
+    );
   }
   function holdDice(id) {
     setTimerStarted(true)
@@ -84,9 +90,8 @@ function App() {
     , [dice])
 
   useEffect(() => {
-    localStorage.getItem('moves') !== 0 && localStorage.setItem('moves', moves);
-    localStorage.getItem('time') !== 0 && localStorage.setItem('time', `${minutes}:${seconds}`);
-    if (isGameRestarted) setMoves(0);
+    moves!= 0 ? localStorage.setItem('moves', moves) : localStorage.getItem('moves')
+    seconds != 0 || minutes !=0 ? localStorage.setItem('time', `${minutes}:${seconds}`) : localStorage.getItem('time')
   }, [tenzies])
 
   return (
@@ -99,8 +104,8 @@ function App() {
             Roll until all dice are the same. Click each die to freeze it at its current value between rolls.
           </p>
           <div className="info">
-            <p className="result">Last result: {localStorage.getItem('moves') ? localStorage.getItem('moves') : 0}, {localStorage.getItem('time') ? localStorage.getItem('time') : ''}</p>
             <Timer seconds={seconds} minutes={minutes}> Time: </Timer>
+            <p className="result">Last result: {localStorage.getItem('moves')}, {localStorage.getItem('time')}</p>
           </div>
           <p>
             Moves: {moves}
@@ -111,7 +116,10 @@ function App() {
           <button onClick={() => {
             rollDices();
             if (tenzies) {
-              setMoves(0); setSeconds(0); setMinutes(0)
+              setMoves(0);
+              setSeconds(0);
+              setMinutes(0);
+              setTimerStarted(false)
             }
           }}>
             {tenzies ? 'New game' : 'Roll'}
