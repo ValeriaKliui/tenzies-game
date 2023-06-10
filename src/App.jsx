@@ -79,12 +79,25 @@ function App() {
     setDice(prevDice => prevDice.map(elem => elem.id === id ? { ...elem, isHeld: true } : elem))
   }
 
+  function restartGame(){
+    setMoves(0);
+    setSeconds(0);
+    setMinutes(0);
+    setTimerStarted(false)
+  }
+
   useEffect(() => {
     const allHeld = dice.every(dice => dice.isHeld);
     const firstValue = dice[0].value;
     const allTheSame = dice.every(dice => dice.value === firstValue);
     if (allHeld && allTheSame) {
       setTenzies(true);
+    }
+    if (allHeld && !allTheSame) {
+      setTenzies(false);
+      setDice(allNewDice())
+      rollDices();
+      restartGame()
     }
   }
     , [dice])
@@ -116,10 +129,7 @@ function App() {
           <button onClick={() => {
             rollDices();
             if (tenzies) {
-              setMoves(0);
-              setSeconds(0);
-              setMinutes(0);
-              setTimerStarted(false)
+              restartGame();
             }
           }}>
             {tenzies ? 'New game' : 'Roll'}
