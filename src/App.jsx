@@ -15,7 +15,6 @@ function App() {
   const [minutes, setMinutes] = useState(0);
 
   useEffect(() => {
-    console.log(isTimerStarted, tenzies)
     if (isTimerStarted) {
       const timerId = setInterval(() => {
         setSeconds(prevSec => prevSec + 1)
